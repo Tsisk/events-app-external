@@ -152,9 +152,16 @@ app.post('/event',
     upload.any(), // second argument - how to parse the uploaded content
     // into req.body
     (req, res) => {
-        
-        // code for image upload goes here
 
+        if (req.files && req.files[0]) {
+            const fileName = `${uuidv4()}.jpg`
+            imageRepository.saveImage(req.files[0], fileName)
+            .then(() => {
+                postOnToServer(req, res, fileName);
+            }) ;
+        } else {
+            postOnToServer(req, res, '');
+        }
         postOnToServer(req, res, '');
     });
 
